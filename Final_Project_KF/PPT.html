@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Lexical prediction mechanisms in Brazilian Portuguese: addressing methodological issues</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lexical prediction mechanisms in Brazilian Portuguese: addressing methodological issues
+## Filho &amp; Godoy
+### Rutgers University
+### April, 29, 2021
+
+---
+
+
+
+
+
+#Background
+
+Research has found evidence suggesting that specific lexical items and some of their features (e.g., word form and grammatical gender) can be predicted during language processing (e.g., DeLong et al., 2005; Van Berkum et al., 2005). 
+
+In Van Berkum et al. (2005), for example, in a self-paced reading experiment Dutch participants heard stories that supported a prediction of a specific noun.
+
+To investigate whether this noun was anticipated at the preceding indefinite article, stories were continued with a gender-marked adjective whose suffix mismatched the upcoming noun's syntactic gender. 
+
+The results revealed that prediction-inconsistent adjectives slowed readers down before they saw the noun. 
+---
+# The Study: 
+
+To investigate whether these findings can be replicated in Brazilian Portuguese (BP), Filho &amp; Godoy conducted a self-paced reading experiment examining whether grammatical gender marking in Brazilian Portuguese are used to make predictions during language comprehension. 
+
+###**Example stimuli (Translated into English)**
+
+*The couple looked at the restaurant menu until they could make up their minds. They then called down the waitress, who wrote down...*
+
++ (predictable) *the*(m) *long*(m) *and detailed* (m) *order*(m) *on her pad.*
++ (unpredictable) *the*(f) *long*(f) *and detailed*(f) *note*(f) *on her pad.*
+
+The authors expected that unpredictable nouns would have a longer reading times. They also expected this effect to show up before the noun, since the preceding words already give away the gender of the noun. 
+---
+# Step 1: Loading necessary packages and loading data
+
+
+
++ The **lme4** package allows one to fit linear and generalized linear mixed-effects models.
++ The **lmerTest** package provides p-values in type I, II or III anova and summary tables for lmer model fits.
++ The **readxl** package makes it easy to get data out of Excel and into R. 
+---
+# Step 2: Running exclusion criteria
++ Removed data from participants who did the experiment more than once (221 and 222) and who did not complete high school (195 and 237) 
+
+
+```r
+'%ni%' &lt;- Negate('%in%') #declaring function used in the filter
+data &lt;- data%&gt;%
+    filter(subj %ni% c("221", "222", "195", "237"))
+```
++ Removed all data from participants that answered more than 1/4 of the questions incorrectly 
+
+```r
+data &lt;- data%&gt;%
+  group_by(subj)%&gt;%
+  mutate(accuracy = sum(is_correct == 1)/n())
+```
++ Discarded data from observations in which participants answered the question incorrectly 
+
+```r
+data &lt;- data%&gt;%
+  filter(is_correct == 1)
+```
+---
+# Step 3: Discarded filler data
+
+```r
+data &lt;- data%&gt;%
+    filter(grepl("prev", type))
+```
+---
+# Step 4: Defined 'item_id', 'subj', 'type' as factors (*so that R would recognize them as categorical variables*) and dropping previously discarded levels before continuing -- 
+
+```r
+ data$item_id &lt;- as.factor(data$item_id)
+  data$subj &lt;- as.factor(data$subj)
+  data$type &lt;- as.factor(data$type)
+  data$subj &lt;- droplevels(data$subj)
+  data$subj_uid &lt;- droplevels(data$subj_uid)
+```
+---
+# Step 5: Loaded the critical regions for each item from an excel file
+
+```r
+regions &lt;- read.csv("./Project_Docs/critical_regions.csv")
+```
+---
+# Step 6: Added columns with the critical regions to the main data frame 
+
+```r
+regions$item_id &lt;- as.factor(regions$item_id)
+
+data &lt;- left_join(data, regions, by = "item_id")
+  
+cloze &lt;- read_excel("cloze.xlsx")
+cloze$item_id &lt;- as.factor(cloze$item_id)
+cloze$type &lt;- as.factor(cloze$type)
+  
+data &lt;- left_join(data, cloze, by = c("item_id", "type"))
+```
+---
+# Step 7: Organized data by regions of interest 
+
+```r
+rt_art &lt;- data%&gt;%
+  filter(region == art)
+
+rt_adj1 &lt;- data%&gt;%
+  filter(region == adj1)
+
+rt_conj &lt;- data%&gt;%
+  filter(region == conj)
+
+rt_adj2 &lt;- data%&gt;%
+  filter(region == adj2)
+
+rt_subst &lt;- data%&gt;%
+  filter(region == subst)
+
+rt_spill &lt;- data%&gt;%
+  filter(region == spill)
+```
+
+
+
+---
+# Step 2: Fitting models 
+
+
+The authors conducted two different analyses: 
++ First, they fit regular linear-mixed models to the words' reading times, which were log-transformed because of their distributions
++ Predictability was the independent variable, and random effects for participants and items were included whenever possible
+
+```r
+lmer(rt.log~type + (1+type|subject) + (1+type|item_id))
+```
++ Second, they fit generalized models to data in their original, untransformed distribution. The family distribution parameter was set to "gamma."
+
+```r
+glmer(rt~type + (1+type|subject) + (1+type|item_id), family = Gamma)
+```
+
+---
+#Explanation of analysis 
+
+
+
+---
+#Appropriateness of analysis 
+ 
+
+---
+
+#Presentation of results 
+
+
+---
+#Pros and Cons of analysis 
+
+---
+#References
+
+Daneman, M, &amp; Carpenter, P. A. (1980). Individual differences in working memory and reading. *Journal of Verbal Learning and Verbal Behavior, 19*, 450–66.
+
+Sagarra, N. (2017). Longitudinal effects of working memory on L2 grammar and reading abilities. *Second Language Research, 33*(3), 341–363.
+
+Waters, G. S., &amp; Caplan, D (1996). The measurement of verbal working memory capacity and its relation to reading comprehension. *The Quarterly Journal of Experimental Psychology, 49*, 51–79.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
