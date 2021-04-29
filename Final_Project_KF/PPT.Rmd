@@ -46,7 +46,7 @@ The results revealed that prediction-inconsistent adjectives slowed readers down
 ---
 # The Study: 
 
-To investigate whether these findings can be replicated in Brazilian Portuguese (BP), Filho & Godoy conducted a self-paced reading experiment examining whether grammatical gender marking in Brazilian Portuguese are used to make predictions during language comprehension. 
+To investigate whether these findings can be replicated in Brazilian Portuguese (BP), Filho & Godoy conducted a self-paced reading experiment examining whether grammatical gender markings in Brazilian Portuguese are used to make predictions during language comprehension. 
 
 ###**Example stimuli (Translated into English)**
 
@@ -56,10 +56,25 @@ To investigate whether these findings can be replicated in Brazilian Portuguese 
 + (unpredictable) *the*(f) *long*(f) *and detailed*(f) *note*(f) *on her pad.*
 
 The authors expected that unpredictable nouns would have a longer reading times. They also expected this effect to show up before the noun, since the preceding words already give away the gender of the noun. 
----
-# Step 1: Loading necessary packages and loading data
 
-```{r, load_packages}
+---
+## The analyses
+
+The authors conducted two different analyses: 
++ First, they fit regular linear-mixed models to the words' reading times, which were log-transformed because of their distributions
++ Predictability was the independent variable, and random effects for participants and items were included whenever possible
+```{r, eval=F, echo=T, model_1}
+lmer(rt.log~type + (1+type|subject) + (1+type|item_id))
+```
++ Second, they fit generalized models to data in their original, untransformed distribution. The family distribution parameter was set to "gamma."
+```{r, eval=F, echo=T, model_2}
+glmer(rt~type + (1+type|subject) + (1+type|item_id), family = Gamma)
+```
+
+---
+## Step 1: Loading necessary packages and loading data
+
+```{r, eval=F, echo=T, load_packages}
 library(tidyverse)
 library(lme4)
 library(lmerTest)
@@ -70,7 +85,7 @@ library(readxl)
 + The **lmerTest** package provides p-values in type I, II or III anova and summary tables for lmer model fits.
 + The **readxl** package makes it easy to get data out of Excel and into R. 
 ---
-# Step 2: Running exclusion criteria
+## Step 2: Running exclusion criteria
 + Removed data from participants who did the experiment more than once (221 and 222) and who did not complete high school (195 and 237) 
 
 ```{r, eval=F, echo=T, exc1}
@@ -78,25 +93,31 @@ library(readxl)
 data <- data%>%
     filter(subj %ni% c("221", "222", "195", "237"))
 ```
-+ Removed all data from participants that answered more than 1/4 of the questions incorrectly 
++ Removed all data from participants that answered more than 1/4 of the questions incorrectly *n = # of words in sentence*
 ```{r, eval=F, echo=T, exc2}
 data <- data%>%
   group_by(subj)%>%
   mutate(accuracy = sum(is_correct == 1)/n())
+data <- data%>%
+  filter(accuracy >= 0.750)
 ```
-+ Discarded data from observations in which participants answered the question incorrectly 
+---
+## Step 2: Running exclusion criteria
++ Discarded data from observations in which participants answered the questions incorrectly 
 ```{r, eval=F, echo=T, exc3}
 data <- data%>%
   filter(is_correct == 1)
 ```
 ---
-# Step 3: Discarded filler data
+## Step 3: Discarded filler data 
 ```{r, eval=F, echo=T, exc4}
 data <- data%>%
     filter(grepl("prev", type))
 ```
+*target data had two types: prev.nao vs. prev.sim*
+
 ---
-# Step 4: Defined 'item_id', 'subj', 'type' as factors (*so that R would recognize them as categorical variables*) and dropping previously discarded levels before continuing -- 
+## Step 4: Defined 'item_id', 'subj', 'type' as factors and dropping previously discarded levels before continuing
 ```{r, eval=F, echo=T, exc5}
  data$item_id <- as.factor(data$item_id)
   data$subj <- as.factor(data$subj)
@@ -104,13 +125,16 @@ data <- data%>%
   data$subj <- droplevels(data$subj)
   data$subj_uid <- droplevels(data$subj_uid)
 ```
++ 'item_id', 'subj', 'type' were defined as as factors so that R would recognize them as factors (tells you how many groups) rather than characters (which are read as strings)
+
++ It's a way of making sure R reads them as categorical variables.  
 ---
-# Step 5: Loaded the critical regions for each item from an excel file
+## Step 5: Loaded the critical regions for each item from an excel file
 ```{r, eval=F, echo=T, exc6}
 regions <- read.csv("./Project_Docs/critical_regions.csv")
 ```
 ---
-# Step 6: Added columns with the critical regions to the main data frame 
+## Step 6: Added columns with the critical regions to the main data frame 
 ```{r, eval=F, echo=T, exc7}
 regions$item_id <- as.factor(regions$item_id)
 
@@ -123,7 +147,7 @@ cloze$type <- as.factor(cloze$type)
 data <- left_join(data, cloze, by = c("item_id", "type"))
 ```
 ---
-# Step 7: Organized data by regions of interest 
+## Step 7: Organized data by regions of interest 
 ```{r, eval=F, echo=T, exc8}
 rt_art <- data%>%
   filter(region == art)
@@ -143,47 +167,194 @@ rt_subst <- data%>%
 rt_spill <- data%>%
   filter(region == spill)
 ```
-
-
-
 ---
-# Step 2: Fitting models 
+## Step 7: Organized data by regions of interest 
 
-```{r, eval=F, echo=T, models}
+Created 6 subsets out of each of the regions with the RTs for each region. 
+
+Self-paced reading forces participants to read sentences sequentially, with no looking ahead or looking back; however, participants can continue processing a word as they look at later words. 
+
+This can lead to “spillover” effects, where the difficulty induced by a given word slows RTs one or more words further downstream and may not show up on the word in question (e.g., Koornneef & van Berkum, 2006; Smith and Levy, 2013). 
+
+To account for this for this, self-paced reading is often analyzed using a multi-word spillover region
+---
+## Step 8: Checking data distribution
+The authors checked data distribution for each of the regions using: 
++ an overall histogram
++ a histogram broken up by type
++ a box plot broken up by type
+
+For example...
+---
+```{r, eval=F, echo=T, exc9}
+ggplot(rt_art, aes(x = rt))+
+  geom_histogram()
 ```
-The authors conducted two different analyses: 
-+ First, they fit regular linear-mixed models to the words' reading times, which were log-transformed because of their distributions
-+ Predictability was the independent variable, and random effects for participants and items were included whenever possible
-```{r, eval=F, echo=T, model_1}
-lmer(rt.log~type + (1+type|subject) + (1+type|item_id))
+
+```{r, eval=T, echo=F, exc10}
+knitr::include_graphics("./Analysis_Docs/box1")
 ```
-+ Second, they fit generalized models to data in their original, untransformed distribution. The family distribution parameter was set to "gamma."
-```{r, eval=F, echo=T, model_2}
-glmer(rt~type + (1+type|subject) + (1+type|item_id), family = Gamma)
+---
+```{r, eval=F, echo=T, exc11}
+ggplot(rt_art, aes(x = rt))+
+  geom_histogram()+
+  facet_wrap(~type)
 ```
 
+```{r, eval=T, echo=F, exc12}
+knitr::include_graphics("./Analysis_Docs/box2")
+```
 ---
-#Explanation of analysis 
+```{r, eval=F, echo=T, exc13}
+ggplot(rt_art, aes(x = type, y = rt))+
+  geom_boxplot()
+```
 
-
-
+```{r, eval=T, echo=F, exc14}
+knitr::include_graphics("./Analysis_Docs/plot3")
+```
 ---
-#Appropriateness of analysis 
- 
+## Step 9: Eliminating outliers (any observation > 2500 ms)
+```{r, eval=F, echo=T, exc15}
+rt_art <- rt_art%>%
+  filter(rt <= 2500 & rt >= 100) 
 
+rt_adj1 <- rt_adj1%>%
+  filter(rt <= 2500 & rt >= 100) 
+
+rt_conj <- rt_conj%>%
+  filter(rt <= 2500 & rt >= 100) 
+
+rt_adj2 <- rt_adj2%>%
+  filter(rt <= 2500 & rt >= 100) 
+
+rt_subst <- rt_subst%>%
+  filter(rt <= 2500 & rt >= 100) 
+
+rt_spill <- rt_spill%>%
+  filter(rt <= 2500 & rt >= 100) 
+```
 ---
+## Step 10: check distributions again 
+```{r, eval=F, echo=T, exc16}
+ggplot(rt_art, aes(x = rt))+
+  geom_histogram()
+```
 
-#Presentation of results 
-
-
+```{r, eval=T, echo=F, exc17}
+knitr::include_graphics("./Analysis_Docs/filter1")
+```
 ---
-#Pros and Cons of analysis 
+```{r, eval=F, echo=T, exc18}
+ggplot(rt_art, aes(x = rt))+
+  geom_histogram()+
+  facet_wrap(~type)
+```
+
+```{r, eval=T, echo=F, exc19}
+knitr::include_graphics("./Analysis_Docs/filter2")
+```
+---
+```{r, eval=F, echo=T, exc20}
+ggplot(rt_art, aes(x = type, y = rt))+
+  geom_boxplot()
+```
+
+```{r, eval=T, echo=F, exc21}
+knitr::include_graphics("./Analysis_Docs/filter3")
+```
+---
+## Step 11: Performing log transformations on the data 
+Visual inspection showed that data followed a non-normal distribution
+
+A log transformation can be used to make highly skewed distributions less skewed (Decreases the difference between values)
+---
+```{r, eval=F, echo=T, exc22}
+ggplot(rt_art, aes(x = rt.log))+
+  geom_histogram()
+```
+
+```{r, eval=T, echo=F, exc23}
+knitr::include_graphics("./Analysis_Docs/log_histogram_1")
+```
+---
+```{r, eval=F, echo=T, exc24}
+ggplot(rt_art, aes(x = type, y = rt.log))+
+  geom_boxplot()  
+```
+
+```{r, eval=T, echo=F, exc25}
+knitr::include_graphics("./Analysis_Docs/log_2")
+```
+---
+## Step 12: Descriptive statistics (before and after outlier removal)
+
+```{r, eval=F, echo=T, exc26}
+rt_art%>%
+  group_by(type)%>%
+  summarise(mean = mean(rt), median = median(rt)) 
+```
+Before: 
++ **Type 1** prev.nao  404 (mean).    372 (median)
++ **Type 2** prev.sim  400 (mean).    374 (median)
+
+After: 
++ **Type 1** prev.nao  401 (mean).    372 (median)
++ **Type 2** prev.sim  398 (mean).    374 (median)
+
+When data has a normal distribution the mean and median will be close together 
+---
+## Step 13: Adjusting models
+Models that have been commented out are the ones that failed to converge or that were not needed. 
+```{r, eval=F, echo=T, exc27}
+#model.art <- lmer(rt.log ~ type + (1+type|subj) + (1+type|item_id), data = rt_art, REML = FALSE)
+#model.art <- lmer(rt.log ~ type + (1+type|subj) + (1|item_id), data = rt_art, REML = FALSE)
+model.art <- lmer(rt.log ~ type + (1|subj) + (1|item_id), data = rt_art, REML = FALSE
+```
+
+```{r, eval=F, echo=T, exc28}
+summary(model.art)
+```
+---
+```{r, eval=F, echo=T, exc29}
+Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's method [lmerModLmerTest]
+Formula: rt.log ~ type + (1 | subj) + (1 | item_id)
+   Data: rt_art
+
+     AIC      BIC   logLik deviance df.resid 
+  1396.3   1430.1   -693.2   1386.3     6370 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.9228 -0.5858 -0.1146  0.4583  8.2100 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ subj     (Intercept) 0.041009 0.20251 
+ item_id  (Intercept) 0.001846 0.04296 
+ Residual             0.063028 0.25105 
+Number of obs: 6375, groups:  subj, 337; item_id, 20
+
+Fixed effects:
+               Estimate Std. Error         df t value Pr(>|t|)    
+(Intercept)   5.934e+00  1.530e-02  9.360e+01 387.865   <2e-16 ***
+typeprev.sim -3.299e-03  6.373e-03  6.040e+03  -0.518    0.605    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr)
+typeprev.sm -0.208
+```
 
 ---
 #References
 
-Daneman, M, & Carpenter, P. A. (1980). Individual differences in working memory and reading. *Journal of Verbal Learning and Verbal Behavior, 19*, 450–66.
+DeLong, K., Urbach, T. & Kutas, M. Probabilistic word pre-activation during language comprehension inferred from electrical brain activity. *Nature Neuroscience, 8*, 1117–1121 (2005). 
 
-Sagarra, N. (2017). Longitudinal effects of working memory on L2 grammar and reading abilities. *Second Language Research, 33*(3), 341–363.
+Koornneef, A. W. and van Berkum, J. J. (2006). On the use of verb-based implicit causality in sentence comprehension : Evidence from self-paced reading and eye tracking. *Journal of Memory and Language, 54*(4), 445–465.
 
-Waters, G. S., & Caplan, D (1996). The measurement of verbal working memory capacity and its relation to reading comprehension. *The Quarterly Journal of Experimental Psychology, 49*, 51–79.
+Smith, N. J. and Levy, R. (2013). The effect of word predictability on reading time is logarithmic. *Cognition, 128*(3), 302–319.
+
+Van Berkum, J. J., Brown, C. M., Zwitserlood, P., Kooijman, V., & Hagoort, P. (2005). Anticipating upcoming words in discourse: evidence from ERPs and reading times. *Journal of experimental psychology. Learning, memory, and cognition, 31*(3), 443–467.
+
