@@ -28,14 +28,19 @@ r_refs("r-references.bib")
 
 # Introduction
 The present study is a self-paced reading experiment examining whether grammatical gender markings in Brazilian Portuguese are used to make predictions during language comprehension. 
+
 # Research Questions
 **RQ 1.** Can adult Portuguese speakers predict specific lexical items during reading using grammatical gender cues? 
 
 # Hypotheses
-Regarding RQ1, it was predicted that participants would use grammatical gender markings to make predictions during self-paced reading. 
+Regarding RQ1, it was predicted that participants would use grammatical gender markings to make predictions during self-paced reading.
+
 # Methods
+
 ## Participants
+
 There were 339 participants between 18 and 30 years old included in the study. Originally, there were 343 participants, but 2 participants were excluded for having completed the experiment more than once and 2 participants were excluded because they reported not having completed high school. All participants reported Brazilian Portuguese as a first language. Participants were recruited within the academic communities of the Federal University of Rio Grande do Norte and the Federal University of Minas Gerais through an advertisement sent by email to institutional emailing lists. 
+
 ## Materials
 There were 20 experimental items with two conditions in the self-paced reading task: predictable and unpredictable. The predictable condition contained an expected critical noun while the unpredictable condition contained a plausible but unexpected critical noun. Nouns always had different grammatical genders across conditions and were classified as predictable or unpredictable on basis of the results of a previous experiment. Item dispalay order was randomized during the experiment. 
 An example item in both conditions is provided in (1). 
@@ -43,16 +48,15 @@ An example item in both conditions is provided in (1).
 
 **Marina estava dirigindo e percebeu que havia passado por cima de um prego. Ela parou e pegou as ferramentas para trocar om velhom e gastom pneum o mais rápido possível.**
 
-"Marina was driving when she realized that she had run over a nail. She pulled over and 
-got the tools to change them old(m) and worn-out(m) tire(m) as quickly as possible"
+"Marina was driving when she realized that she had run over a nail. She pulled over and got the tools to change them old(m) and worn-out(m) tire(m) as quickly as possible"
     (b) Unpredictable condition 
     
 **Marina estava dirigindo e percebeu que havia passado por cima de um prego. Elaparou e pegou as ferramentas para trocar af velhaf e gastaf rodaf o mais rápido possível.**
 
-"Marina was driving when she realized that she had run over a nail. She pulled over and 
-got the tools to change the(f) old(f) and worn-out(f) wheel(f) as quickly as possible"
+"Marina was driving when she realized that she had run over a nail. She pulled over and got the tools to change the(f) old(f) and worn-out(f) wheel(f) as quickly as possible"
 
-It was predicted that unpredictable nouns would have a longer reading times. It was also anticipated that if critical nouns were activated before they were shown, this effect would show up before the noun because the preceding words indicated the gender of the upcoming noun. 
+It was predicted that unpredictable nouns would have a longer reading times. It was also anticipated that if critical nouns were activated before they were shown, this effect would show up before the noun because the preceding words indicated the gender of the upcoming noun.
+
 ## Procedure
 Once participants clicked the link in the advertisements, they were directed to the experiment page on the Ibex Farm platform (Drummond, 2017). After reading the instructions, indicating consent and filling out a general demographic form, participants completed a practice round before the actual experiment began.
 
@@ -60,12 +64,21 @@ During sentence reading, only one word was revealed at a time, and participants 
 
 ## Data analysis
 
-The data were analyzed in R using 
+The data were analyzed in R using a linear-mixed effects models and a generalized linear mixed effects models. 
 
-Lastly, I used `r cite_r("r-references.bib")` for all the analyses.
+In the linear mixed-effects models, *log-transformed reading times* were the dependent variable and *item conditions* (predictable/unpredictable) were the fixed effect. Random effects for *items* and *participants* were included whenever permitted by the data. 
 
+In the generalized linear mixed-effects models, *reading times* were the dependent variable and *item conditions* (predictable/unpredictable) were the fixed effect. Random effects for *items* and *participants* were included whenever permitted by the data. 
+
+Significance of main effects and all possible interactions were examined using hierarchical partitioning of the variance via nested model comparisons.
+
+Analyses were conducted on reading times from each word in each item's six critical regions (article, first preceding adjective, conjunction, second preceding adjective, critical noun, and word that comes after the critical noun). 
 
 # Results
+
+Data analysis was conducted after running the exclusion criteria for performance in the comprehension questions. The data of participants who answered more than 25% of the comprehension questions incorrectly was discarded. Observations that came from trials in which the subjects answered the question incorrectly was also discarded.  After checking data distribution, outlier observations (any that were above 2500 ms). Observations below 100 ms, which were attributed to uninterrupted key pressing between two words, were also discarded. In total these exclusions amounted to a data loss of 6%. 
+
+
 
 
 # Discussion
