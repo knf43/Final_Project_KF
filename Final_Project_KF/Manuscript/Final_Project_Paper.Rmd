@@ -30,6 +30,7 @@ r_refs("r-references.bib")
 The present study is a self-paced reading experiment examining whether grammatical gender markings in Brazilian Portuguese are used to make predictions during language comprehension. 
 # Research Questions
 **RQ 1.** Can adult Portuguese speakers predict specific lexical items during reading using grammatical gender cues? 
+
 # Hypotheses
 Regarding RQ1, it was predicted that participants would use grammatical gender markings to make predictions during self-paced reading. 
 # Methods
@@ -55,25 +56,20 @@ It was predicted that unpredictable nouns would have a longer reading times. It 
 ## Procedure
 Once participants clicked the link in the advertisements, they were directed to the experiment page on the Ibex Farm platform (Drummond, 2017). After reading the instructions, indicating consent and filling out a general demographic form, participants completed a practice round before the actual experiment began.
 
-During sentence reading, only one word was revealed at a time, and participants used the space bar to move 
-from one word to the next. After reading each sentence participants were asked a comprehension question, which could be answered by either pressing “1” or “2” on the keyboard or clicking the chosen answer, which was either “yes” or “no.” Comprehension questions were balanced so that half would have “yes” as the correct answer. Responses were recorded and later used in data analysis to control for attention to the task. After participants answered a question, a message informed them if they had chosen the correct answer or not. Following the completion of the experiment, participants could leave a comment about the task by filling out an embedded Google Form. 
+During sentence reading, only one word was revealed at a time, and participants used the space bar to move from one word to the next. After reading each sentence participants were asked a comprehension question, which could be answered by either pressing “1” or “2” on the keyboard or clicking the chosen answer, which was either “yes” or “no.” Comprehension questions were balanced so that half would have “yes” as the correct answer. Responses were recorded and later used in data analysis to control for attention to the task. After participants answered a question, a message informed them if they had chosen the correct answer or not. Following the completion of the experiment, participants could leave a comment about the task by filling out an embedded Google Form. 
 
 ## Data analysis
 
-The data were analyzed in R using a generalized linear mixed-effects model with a binomial linking function. The model included *frequency of codeswitching* as the dependent variable and *proficiency in Romanian*, *generation status* and *participants' gender* as fixed factors. High frequency of CS was coded as "1" and low frequency of CS was coded as "0". Significance of main effects and all possible interactions were examined using hierarchical partitioning of the variance via nested model comparisons.
+The data were analyzed in R using 
 
 Lastly, I used `r cite_r("r-references.bib")` for all the analyses.
 
 
 # Results
 
-The two panels in *Figure 1* show the CS frequency of participants as a function of Romanian language proficiency, as well as generation (G1 or G2) and gender (female or male). 
-The model that examined frequency of CS as a factor of proficiency provided the best fit (with Pr(>Chi) = 0.0007759).
-A visual analysis of the plots shows that for G1 participants, frequency of CS decreased as proficiency increased for both female and male participants. However, for G2 male participants, frequency of CS increased with proficiency, while for G2 female participants it decreased. 
-
 
 # Discussion
-This study looked at Romanian-Spanish bilinguals' frequency of codeswitching and the potential influence of proficiency in Romanian, gender identity, and  generation status. 
+ 
 
 \newpage
 
