@@ -54,7 +54,7 @@ It was predicted that unpredictable nouns would have a longer reading times. It 
 
 ## Procedure
 
-Participants completed the experiment on the Ibex Farm platform [@Drummond2017]. After reading the instructions, indicating consent, and filling out a general demographic form, participants completed a practice round before the actual experiment began.
+Participants completed the experiment on the Ibex Farm platform [@drummond_ibex_nodate]. After reading the instructions, indicating consent, and filling out a general demographic form, participants completed a practice round before the actual experiment began.
 
 During sentence reading, only one word was revealed at a time, and participants used the space bar to move from one word to the next. After reading each sentence, participants were asked a comprehension question, which could be answered by either pressing “1” or “2” on the keyboard or clicking the chosen answer, which was either “yes” or “no.” Comprehension questions were balanced so that half would have “yes” as the correct answer. Responses were recorded and later used in data analysis to control for attention to the task. After participants answered a question, a message informed them if they had chosen the correct answer or not. Following the completion of the experiment, participants could leave a comment about the task by filling out an embedded Google Form.
 
@@ -67,9 +67,9 @@ The data were analyzed in R using linear-mixed effects models and generalized li
 Data analyses were conducted after running the exclusion criteria for performance in the comprehension questions. The data of participants who answered more than 25% of the comprehension questions incorrectly were discarded. Observations that came from trials in which the subjects answered the question incorrectly were also discarded.  After checking data distribution, outlier observations (any that were above 2500 ms) were discarded. Observations below 100 ms, which were attributed to uninterrupted key pressing between two words, were also discarded. In total these exclusions amounted to a data loss of 6%. Analyses were conducted on reading times from each word in each item's six critical regions (article, first preceding adjective, conjunction, second preceding adjective, critical noun, and spillover region). 
 
 
-For the linear mixed-effect models, reading times were log-transformed and linear mixed-effect models were fit for each region. Log-transformed reading times were the dependent variable and item conditions were the fixed effect. Random effects for items and participants were included whenever permitted by the data. Reading times for all regions did not follow a normal distribution but, rather, presented a strong positive skew, with a long tail to the right, as is usually the case with reading times data [@Smith2013]. Model residuals were checked for normality by visually inspecting Q-Q plots. Reported p-values were adjusted for multiple comparisons with the Bonferroni method. 
+For the linear mixed-effect models, reading times were log-transformed and linear mixed-effect models were fit for each region. Log-transformed reading times were the dependent variable and item conditions were the fixed effect. Random effects for items and participants were included whenever permitted by the data. Reading times for all regions did not follow a normal distribution but, rather, presented a strong positive skew, with a long tail to the right, as is usually the case with reading times data [@smith_effect_2013]. Model residuals were checked for normality by visually inspecting Q-Q plots. Reported p-values were adjusted for multiple comparisons with the Bonferroni method. 
 
-Generalized linear mixed-effect models were fit to raw reading times and family parameter was set to Gamma, with identity as the linking function. The Gamma probability distribution can be used as a model for continuous but non normal data [@Chen2018], accordingly raw reading times were the dependent variable and item conditions were the fixed effect. As in the first analysis, random effects for items and participants were included whenever permitted by the data. Reported p-values were adjusted for multiple comparisons with the Bonferroni method. 
+Generalized linear mixed-effect models were fit to raw reading times and family parameter was set to Gamma, with identity as the linking function. The Gamma probability distribution can be used as a model for continuous but non normal data [@chen_generalized_2018], accordingly raw reading times were the dependent variable and item conditions were the fixed effect. As in the first analysis, random effects for items and participants were included whenever permitted by the data. Reported p-values were adjusted for multiple comparisons with the Bonferroni method. 
 
 Results of the linear mixed-effect models revealed that log-transformed reading times for the predictable condition were significantly smaller only in the critical noun (p = 0.001776, b = -0.040696) and spillover (p = 0.001632, b = -0.05685) regions (see Figures 1 and 2).  
 
@@ -109,4 +109,4 @@ The present study looked at Portuguese speakers' ability to predict specific lex
 <div id="refs" custom-style="Bibliography"></div>
 \endgroup
 
-```
+
