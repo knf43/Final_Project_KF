@@ -38,10 +38,10 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Lexical prediction mechanisms in Brazilian Portuguese: Addressing methodological issues},
-  pdfauthor={Kaylee Fernandez1},
+  pdftitle={The title},
+  pdfauthor={First Author1 \& Ernst-August Doelle1,2},
   pdflang={en-EN},
-  pdfkeywords={\texttt{papaja}, portuguese, grammatical gender, self-paced reading},
+  pdfkeywords={keywords},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -101,6 +101,20 @@
 % \setlength{\parindent}{0.5in}
 % \setlength{\parskip}{0pt plus 0pt minus 0pt}
 
+% Overwrite redefinition of paragraph and subparagraph by the default LaTeX template
+% See https://github.com/crsh/papaja/issues/292
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries\itshape\typesectitle}}
+
+\renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{1em}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-\z@\relax}%
+  {\normalfont\normalsize\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+\makeatother
+
 % \usepackage{etoolbox}
 \makeatletter
 \patchcmd{\HyOrg@maketitle}
@@ -112,14 +126,17 @@
   {\section*{\protect\normalfont{\@title}}}
   {}{\typeout{Failed to patch title.}}
 \makeatother
-\shorttitle{Lexical prediction mechanisms in Brazilian Portuguese}
-\keywords{`papaja`, portuguese, grammatical gender, self-paced reading\newline\indent Word count: X}
+\shorttitle{Title}
+\keywords{keywords\newline\indent Word count: X}
 \DeclareDelayedFloatFlavor{ThreePartTable}{table}
 \DeclareDelayedFloatFlavor{lltable}{table}
 \DeclareDelayedFloatFlavor*{longtable}{table}
 \makeatletter
 \renewcommand{\efloat@iwrite}[1]{\immediate\expandafter\protected@write\csname efloat@post#1\endcsname{}}
 \makeatother
+\usepackage{lineno}
+
+\linenumbers
 \usepackage{csquotes}
 \ifxetex
   % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
@@ -152,25 +169,39 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-\title{Lexical prediction mechanisms in Brazilian Portuguese: Addressing methodological issues}
-\author{Kaylee Fernandez\textsuperscript{1}}
+\title{The title}
+\author{First Author\textsuperscript{1} \& Ernst-August Doelle\textsuperscript{1,2}}
 \date{}
 
 
 \authornote{
 
-This manuscript has been prepared in fulfillment for the final project for Data Science for Linguists.
+Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
 
-The authors made the following contributions. Kaylee Fernandez: .
+Enter author note here.
 
-Correspondence concerning this article should be addressed to Kaylee Fernandez, Department of Spanish and Portuguese, Rutgers University, Office 5184, 15 Seminary Place, New Brunswick, NJ 07649. E-mail: \href{mailto:knf43@rutgers.edu}{\nolinkurl{knf43@rutgers.edu}}
+The authors made the following contributions. First Author: Conceptualization, Writing - Original Draft Preparation, Writing - Review \& Editing; Ernst-August Doelle: Writing - Review \& Editing.
+
+Correspondence concerning this article should be addressed to First Author, Postal address. E-mail: \href{mailto:my@email.com}{\nolinkurl{my@email.com}}
 
 }
 
-\affiliation{\vspace{0.5cm}\textsuperscript{1} Rutgers University}
+\affiliation{\vspace{0.5cm}\textsuperscript{1} Wilhelm-Wundt-University\\\textsuperscript{2} Konstanz Business School}
 
 \abstract{
-This manuscript presents the methodology of a project evaluating S This manuscript has been prepared using \texttt{papaja} and is in fulfillment of the final project for Data Science for Linguists.
+One or two sentences providing a \textbf{basic introduction} to the field, comprehensible to a scientist in any discipline.
+
+Two to three sentences of \textbf{more detailed background}, comprehensible to scientists in related disciplines.
+
+One sentence clearly stating the \textbf{general problem} being addressed by this particular study.
+
+One sentence summarizing the main result (with the words ``\textbf{here we show}'' or their equivalent).
+
+Two or three sentences explaining what the \textbf{main result} reveals in direct comparison to what was thought to be the case previously, or how the main result adds to previous knowledge.
+
+One or two sentences to put the results into a more \textbf{general context}.
+
+Two or three sentences to provide a \textbf{broader perspective}, readily comprehensible to a scientist in any discipline.
 }
 
 
@@ -195,7 +226,7 @@ We report how we determined our sample size, all data exclusions (if any), all m
 \hypertarget{data-analysis}{%
 \subsection{Data analysis}\label{data-analysis}}
 
-We used R {[}Version 4.0.3; R Core Team (2020){]} and the R-package \emph{papaja} {[}Version 0.1.0.9997; Aust and Barth (2020){]} for all our analyses.
+We used R (Version 4.0.3; R Core Team, 2020) and the R-packages \emph{papaja} (Version 0.1.0.9997; Aust \& Barth, 2020), and \emph{tinylabels} (Version 0.2.1; Barth, 2021) for all our analyses.
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -216,6 +247,9 @@ We used R {[}Version 4.0.3; R Core Team (2020){]} and the R-package \emph{papaja
 \begin{CSLReferences}{1}{0}
 \leavevmode\hypertarget{ref-R-papaja}{}%
 Aust, F., \& Barth, M. (2020). \emph{{papaja}: {Create} {APA} manuscripts with {R Markdown}}. Retrieved from \url{https://github.com/crsh/papaja}
+
+\leavevmode\hypertarget{ref-R-tinylabels}{}%
+Barth, M. (2021). \emph{{tinylabels}: Lightweight variable labels}. Retrieved from \url{https://github.com/mariusbarth/tinylabels}
 
 \leavevmode\hypertarget{ref-R-base}{}%
 R Core Team. (2020). \emph{R: A language and environment for statistical computing}. Vienna, Austria: R Foundation for Statistical Computing. Retrieved from \url{https://www.R-project.org/}

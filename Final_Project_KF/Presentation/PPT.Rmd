@@ -60,8 +60,6 @@ The authors expected that unpredictable nouns would have a longer reading times.
 ---
 ## The analyses
 
-The authors conducted two different analyses: 
-
 + First, they fit regular linear-mixed models to the words' reading times, which were log-transformed because of their distributions
 + Predictability was the independent variable, and random effects for participants and items were included whenever possible
 ```{r, eval=F, echo=T, model_1}
